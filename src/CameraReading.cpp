@@ -14,7 +14,7 @@ const char* password = "YOUR_WIFI_PASSWORD"; // <--- ENTER WIFI PASSWORD
 
 // Paste your Teachable Machine Model URL here (must end with /)
 // Example: "https://teachablemachine.withgoogle.com/models/AbCdEfGh/"
-const char* URL_TM_MODEL = "https://teachablemachine.withgoogle.com/models/YOUR_MODEL_ID/"; 
+const char* URL_TM_MODEL = "https://teachablemachine.withgoogle.com/models/n5xPPVFGf/"; 
 // ======================================================
 
 // Pin definition for XIAO ESP32S3 Sense (OV2640)
