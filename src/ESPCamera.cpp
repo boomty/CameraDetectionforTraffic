@@ -9,7 +9,7 @@
 // ===========================
 // Enter your WiFi credentials
 // ===========================
-const char *ssid = "WVUSD_GUEST";
+const char *ssid = "";
 const char *password = "";
 
 void startCameraServer();
