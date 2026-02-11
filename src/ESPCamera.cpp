@@ -1,6 +1,6 @@
 #include "esp_camera.h"
 #include <WiFi.h>
-
+//bruh
 // ===========================
 // Select camera model in board_config.h
 // ===========================
