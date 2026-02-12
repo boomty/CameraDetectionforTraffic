@@ -9,12 +9,12 @@
 #include <WebServer.h>
 
 // ================= USER CONFIGURATION =================
-const char* ssid = "YOUR_WIFI_SSID";         // <--- ENTER WIFI NAME
-const char* password = "YOUR_WIFI_PASSWORD"; // <--- ENTER WIFI PASSWORD
+const char* ssid = "WVUSD_GUEST";         // <--- ENTER WIFI NAME
+const char* password = ""; // <--- ENTER WIFI PASSWORD
 
 // Paste your Teachable Machine Model URL here (must end with /)
 // Example: "https://teachablemachine.withgoogle.com/models/AbCdEfGh/"
-const char* URL_TM_MODEL = "https://teachablemachine.withgoogle.com/models/lzTjiQBVN/"; 
+const char* URL_TM_MODEL = "https://drive.google.com/file/d/1S_4lEjfC0B2gViMPSFYNAQGESdLJWSMI/view?usp=sharing"; 
 // ======================================================
 
 // Pin definition for XIAO ESP32S3 Sense (OV2640)
