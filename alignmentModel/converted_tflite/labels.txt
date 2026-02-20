@@ -1,2 +1,0 @@
-0 Aligned
-1 Not aligned
