@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 #include <esp_camera.h>
-
+#include <queue>
 
 SET_LOOP_TASK_STACK_SIZE(40 * 1024);
 
@@ -10,7 +10,8 @@ SET_LOOP_TASK_STACK_SIZE(40 * 1024);
 SSCMAMicroCore instance;
 SSCMAMicroCore::VideoCapture capture;
 
-
+std::queue<int>results;
+int sum=0;
 void setup() {
 
     // Init serial port
@@ -27,17 +28,29 @@ void setup() {
 }
 
 void loop() {
-
     auto frame = capture.getManagedFrame();
 
     MA_RETURN_IF_UNEXPECTED(instance.invoke(frame));
 
     for (const auto& cls : instance.getClasses()) {
+        if (results.size()>=5){
+            if (results.front()==1){
+                sum-=1;
+            }
+            results.pop();
+        }
         if (cls.score>0.5){
-            Serial.printf("Not aligned");
+            results.push(1);
+            sum+=1;
         }
         else{
-            Serial.printf("Aligned");
+            results.push(0);
+        }
+        if(sum>=3){
+            Serial.println("Not aligned");
+        }
+        else{
+            Serial.println("Aligned");
         }
     }
 
