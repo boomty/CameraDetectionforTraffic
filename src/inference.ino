@@ -53,24 +53,19 @@ void loop() {
         }
     }
 
-    // Decide alignment after processing all classes
     bool isNotAligned = (sum >= 3);
 
-    if (hasClass) {
-        if (isNotAligned) {
-            Serial.println("Not aligned");
+    if (isNotAligned) {
+        Serial.println("Not aligned");
 
-            // Only start sound when state changes from aligned -> not aligned
-            if (!wasNotAligned) {
-                audioPlay();
-            }
-        } else {
-            Serial.println("Aligned");
+        if (!wasNotAligned) {
+            audioPlay();
+        }
+    } else {
+        Serial.println("Aligned");
 
-            // Optional: stop sound once aligned again
-            if (wasNotAligned) {
-                audioStop();
-            }
+        if (wasNotAligned) {
+            audioStop();
         }
 
         wasNotAligned = isNotAligned;
