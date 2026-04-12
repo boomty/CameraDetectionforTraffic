@@ -3,7 +3,8 @@
 #include <esp_camera.h>
 #include <queue>
 
-#include "audio_output.ino"
+#include "IsNotAlignedAudioCode.ino"
+#include "IsAlignedAudioCode.ino"
 
 SET_LOOP_TASK_STACK_SIZE(40 * 1024);
 
@@ -59,13 +60,13 @@ void loop() {
         Serial.println("Not aligned");
 
         if (!wasNotAligned) {
-            audioPlay();
+            IsAlignedAudio();
         }
     } else {
         Serial.println("Aligned");
 
         if (wasNotAligned) {
-            audioStop();
+            NotAlignedAudio();
         }
 
         wasNotAligned = isNotAligned;
