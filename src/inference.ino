@@ -3,8 +3,8 @@
 #include <esp_camera.h>
 #include <queue>
 
-#include "IsNotAlignedAudioCode.ino"
-#include "IsAlignedAudioCode.ino"
+#include "AudioTools.h"
+#include "Aligned.h"
 
 SET_LOOP_TASK_STACK_SIZE(40 * 1024);
 
@@ -16,20 +16,64 @@ int sum = 0;
 
 bool wasNotAligned = false;
 
+uint8_t channels = 1;
+uint16_t sample_rate = 22050;
+uint8_t bits_per_sample = 16;
+
+MemoryStream music(Aligned_raw, Aligned_raw_len);
+I2SStream i2s;  // Output to I2S
+StreamCopy copier(i2s, music); // copies sound into i2s
+
 void setup() {
     Serial.begin(115200);
+    AudioToolsLogger.begin(Serial, AudioToolsLogLevel::Info);   
 
     MA_RETURN_IF_UNEXPECTED(capture.begin(SSCMAMicroCore::VideoCapture::DefaultCameraConfigXIAOS3));
 
     MA_RETURN_IF_UNEXPECTED(instance.begin(SSCMAMicroCore::Config::DefaultConfig));
 
-    audioBegin();
-
     Serial.println("Init done");
+
+    auto config = i2s.defaultConfig(TX_MODE);
+    config.pin_ws = 44; //44 , 7 , 43 ESP-32S3 Sense
+    config.pin_bck = 7;
+    config.pin_data = 43;
+    config.sample_rate = sample_rate;
+    config.channels = channels;
+    config.bits_per_sample = bits_per_sample;
+
+    i2s.begin(config);
+    music.begin();
+
 }
 
 void loop() {
-    audioUpdate();
+
+    bool isNotAligned = (sum >= 3);
+
+    if (isNotAligned) {
+        Serial.println("Not aligned");
+        }
+    
+    else {
+        Serial.println("Aligned!");
+        if (!copier.copy()){
+            i2s.end();
+            stop();
+        }
+     }
+        
+    wasNotAligned = isNotAligned;
+    
+
+    auto perf = instance.getPerf();
+    Serial.printf(
+        "Perf: preprocess=%dms, inference=%dms, postprocess=%dms\n",
+        perf.preprocess,
+        perf.inference,
+        perf.postprocess
+    );
+
 
     auto frame = capture.getManagedFrame();
     MA_RETURN_IF_UNEXPECTED(instance.invoke(frame));
@@ -53,30 +97,4 @@ void loop() {
             results.push(0);
         }
     }
-
-    bool isNotAligned = (sum >= 3);
-
-    if (isNotAligned) {
-        Serial.println("Not aligned");
-
-        if (!wasNotAligned) {
-            IsAlignedAudio();
-        }
-    } else {
-        Serial.println("Aligned");
-
-        if (wasNotAligned) {
-            NotAlignedAudio();
-        }
-
-        wasNotAligned = isNotAligned;
-    }
-
-    auto perf = instance.getPerf();
-    Serial.printf(
-        "Perf: preprocess=%dms, inference=%dms, postprocess=%dms\n",
-        perf.preprocess,
-        perf.inference,
-        perf.postprocess
-    );
 }
