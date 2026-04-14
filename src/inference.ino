@@ -20,9 +20,11 @@ uint8_t channels = 1;
 uint16_t sample_rate = 22050;
 uint8_t bits_per_sample = 16;
 
-MemoryStream music(Aligned_raw, Aligned_raw_len);
+MemoryStream music(__440_raw, __440_raw_len);
 I2SStream i2s;  // Output to I2S
 StreamCopy copier(i2s, music); // copies sound into i2s
+VolumeStream volume(i2s);
+
 
 void setup() {
     Serial.begin(115200);
@@ -44,6 +46,11 @@ void setup() {
 
     i2s.begin(config);
     music.begin();
+
+    auto vcfg = volume.defaultConfig();
+    vcfg.copyFrom(config);
+    volume.begin(vcfg); // we need to provide the bits_per_sample and channels
+    volume.setVolume(30);
 
 }
 
